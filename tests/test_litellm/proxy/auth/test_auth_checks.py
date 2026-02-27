@@ -1534,6 +1534,7 @@ class TestCheckEndUserBudget:
             spend=150.0,
             litellm_budget_table=LiteLLM_BudgetTable(max_budget=100.0),
         )
+        valid_token = UserAPIKeyAuth(token="hashed-token-123")
         mock_proxy_logging = AsyncMock()
         mock_proxy_logging.budget_alerts = AsyncMock()
 
@@ -1541,6 +1542,7 @@ class TestCheckEndUserBudget:
             await _check_end_user_budget(
                 end_user_obj=end_user_obj,
                 route="/chat/completions",
+                valid_token=valid_token,
                 proxy_logging_obj=mock_proxy_logging,
             )
 
@@ -1551,6 +1553,7 @@ class TestCheckEndUserBudget:
         call_kwargs = mock_proxy_logging.budget_alerts.call_args
         assert call_kwargs.kwargs["type"] == "end_user_budget"
         user_info = call_kwargs.kwargs["user_info"]
+        assert user_info.token == "hashed-token-123"
         assert user_info.spend == 150.0
         assert user_info.max_budget == 100.0
         assert user_info.customer_id == "customer_abc"
@@ -1565,12 +1568,14 @@ class TestCheckEndUserBudget:
             spend=50.0,
             litellm_budget_table=LiteLLM_BudgetTable(max_budget=100.0),
         )
+        valid_token = UserAPIKeyAuth(token="hashed-token-123")
         mock_proxy_logging = AsyncMock()
 
         # Should not raise
         await _check_end_user_budget(
             end_user_obj=end_user_obj,
             route="/chat/completions",
+            valid_token=valid_token,
             proxy_logging_obj=mock_proxy_logging,
         )
 
@@ -1636,6 +1641,7 @@ class TestCheckEndUserBudget:
                 max_budget=200.0, soft_budget=50.0
             ),
         )
+        valid_token = UserAPIKeyAuth(token="hashed-token-123")
         mock_proxy_logging = AsyncMock()
         mock_proxy_logging.budget_alerts = AsyncMock()
 
@@ -1643,6 +1649,7 @@ class TestCheckEndUserBudget:
         await _check_end_user_budget(
             end_user_obj=end_user_obj,
             route="/chat/completions",
+            valid_token=valid_token,
             proxy_logging_obj=mock_proxy_logging,
         )
 
@@ -1653,6 +1660,7 @@ class TestCheckEndUserBudget:
         call_kwargs = mock_proxy_logging.budget_alerts.call_args
         assert call_kwargs.kwargs["type"] == "end_user_budget"
         user_info = call_kwargs.kwargs["user_info"]
+        assert user_info.token == "hashed-token-123"
         assert user_info.spend == 80.0
         assert user_info.soft_budget == 50.0
         assert user_info.max_budget == 200.0
@@ -1670,11 +1678,13 @@ class TestCheckEndUserBudget:
                 max_budget=200.0, soft_budget=50.0
             ),
         )
+        valid_token = UserAPIKeyAuth(token="hashed-token-123")
         mock_proxy_logging = AsyncMock()
 
         await _check_end_user_budget(
             end_user_obj=end_user_obj,
             route="/chat/completions",
+            valid_token=valid_token,
             proxy_logging_obj=mock_proxy_logging,
         )
 
@@ -1691,6 +1701,7 @@ class TestCheckEndUserBudget:
                 max_budget=200.0, soft_budget=100.0
             ),
         )
+        valid_token = UserAPIKeyAuth(token="hashed-token-123")
         mock_proxy_logging = AsyncMock()
         mock_proxy_logging.budget_alerts = AsyncMock()
 
@@ -1698,6 +1709,7 @@ class TestCheckEndUserBudget:
             await _check_end_user_budget(
                 end_user_obj=end_user_obj,
                 route="/chat/completions",
+                valid_token=valid_token,
                 proxy_logging_obj=mock_proxy_logging,
             )
 
